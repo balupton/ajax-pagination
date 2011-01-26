@@ -1,6 +1,6 @@
-== Ajax Pagination Demo ==
+# Ajax Pagination Demo
 
-Usage:
+## Usage
 
 	git clone git://github.com/balupton/ajax-pagination.git
 	cd ajax-pagination
@@ -10,7 +10,7 @@ Usage:
 	rake db:seed
 	rails server
 
-Credits
+## Credits
 
-- Keith Pitt https://github.com/keithpitt/ajax-pagination
-- Benjamin Lupton https://github.com/balupton/ajax-pagination
+- [Keith Pitt](http://keithpitt.com) - https://github.com/keithpitt/ajax-pagination
+- [Benjamin Lupton](http://balupton.com) - https://github.com/balupton/ajax-pagination
