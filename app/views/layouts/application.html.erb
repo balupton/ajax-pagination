@@ -2,8 +2,18 @@
 <html>
 <head>
   <title>Better Ajax Pagination (Cross Browser)</title>
+	<script type="text/javascript">
+	if ( typeof JSON === 'undefined' ) {
+		var
+			url = 'public/history.js/scripts/uncompressed/json2.js',
+			scriptEl = document.createElement('script');
+		scriptEl.type = 'text/javascript';
+		scriptEl.src = url;
+		document.body.appendChild(scriptEl,document.body.firstChild);
+	}
+	</script>
   <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag 'jquery.min', 'jquery.address.min', 'rails' %>
+  <%= javascript_include_tag 'jquery.min', 'history.js/scripts/uncompressed/history.adapter.jquery.js', 'history.js/scripts/uncompressed/history.js', 'rails' %>
   <%= csrf_meta_tag %>
   <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
 </head>
@@ -27,43 +37,76 @@
 
     <script type="text/javascript">
 
-      $.address.state('/');
+			// Cache Elements
+			var
+				$form = $('form'),
+				$search = $('#search'),
+				$loading = $('#loading'),
+				$content = $('#content');
 
-      $.address.change(function(event) {
+			// Bind to Form Submit
+      $form.live('submit', function(event) {
+        var
+        	query = $search.val(),
+        	params = $form.serialize(),
+					url = $form.attr('action')+'?'+params,
+					data = {
+						'query': query,
+						'params': params
+					},
+					title = 'Searching for: '+query;
 
-        if($.isEmptyObject(event.parameters))
-          return;
+				History.log('pushState', data, title, url);
+        History.pushState(data,title,url);
 
-        $('#search').val(event.parameters.q);
+				event.preventDefault();
+        return false;
+      })
 
-        $('#loading').slideToggle('fast', function() {
+			// Bind to Ajax Links
+      $('.pagination a').live('click', function() {
+        var
+        	query = $search.val(),
+        	$link = $(this),
+        	url = $link.attr('href'),
+					data = {
+						'query': query,
+					},
+					title = 'Searching for: '+query;
+
+        History.pushState(data,title,url);
+
+        return false;
+      });
+
+			// Bind to State Change
+      History.Adapter.bind(window,'statechange',function() {
+
+				var
+					State = History.getState(),
+					query = State.data.query||'',
+					params = State.data.params||'';
+
+				if ( !query ) return false;
+
+				History.log('statechange', State);
+
+        $loading.slideToggle('fast', function() {
           $.ajax({
-            url: event.path,
-            data: event.parameters,
+            url: State.url,
+            method: 'get',
+            data: params,
             success: function(html) {
-              $('#loading').slideToggle('fast');
-              $('#content').html(html);
+              $loading.slideToggle('fast');
+              $content.html(html);
+            },
+            error: function(){
+            	console.error(this,arguments);
             }
           })
         });
 
       });
-
-      $('form').live('submit', function() {
-        var action = $(this).attr('action'),
-            params = $(this).serialize();
-
-        $.address.value(action + '?' + params);
-
-        return false;
-      })
-
-      $('.pagination a').live('click', function() {
-        var href = $(this).attr('href');
-
-        $.address.value(href);
-        return false;
-      })
 
     </script>
 
