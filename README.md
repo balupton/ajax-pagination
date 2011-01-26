@@ -12,5 +12,5 @@ Usage:
 
 Credits
 
-	- Keith Pitt https://github.com/keithpitt/ajax-pagination
-	- Benjamin Lupton https://github.com/balupton/ajax-pagination
+- Keith Pitt https://github.com/keithpitt/ajax-pagination
+- Benjamin Lupton https://github.com/balupton/ajax-pagination
